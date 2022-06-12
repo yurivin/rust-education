@@ -10,6 +10,7 @@ fn main() {
 
     let house = SmartHouse {
         title: String::from("Nice home"),
+        purpose: String::from("For rent"),
         devices: HashMap::from([
             (
                 String::from("kitchen"),

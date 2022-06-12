@@ -1,9 +1,12 @@
-use smart_home_2::*;
+use std::collections::{HashMap, HashSet};
+use smart_home_2::devices::Devices;
+use smart_home_2::smart_house::SmartHouse;
 
 #[test]
 fn main_integration_test() {
     let house = SmartHouse {
         title: String::from("Nice home"),
+        purpose: String::from("For rent"),
         devices: HashMap::from([
             (
                 String::from("kitchen"),
@@ -29,29 +32,6 @@ fn main_integration_test() {
         ]),
     };
 
-    let device_two = Device {
-        title: String::from("Tongo"),
-        status: String::from("Passive"),
-        item_type: Devices::Thermometer,
-    };
-
-    let owner = OwningDeviceInfoProvider {
-        device: Device {
-            title: String::from("Bongo"),
-            status: String::from("Active"),
-            item_type: Devices::Thermometer,
-        },
-    };
-
-    let borrower = BorrowingDeviceInfoProvider {
-        device_a: &owner.device,
-        device_b: &device_two,
-    };
-
     assert_eq!(house.title, String::from("Nice home"));
-    assert_eq!(house.check_device(Devices::Thermometer, "kitchen"), String::from("Main"));
-
-   // println!("Check field data {:#?}", borrower.device_a.item_type);
-   // println!("Special report: {}", house.create_report(&owner));
-   // println!("Special report: {}", house.create_report(&borrower));
+    assert_eq!(house.check_device(Devices::Thermometer, "kitchen"), "Device is available in this room");
 }
