@@ -1,6 +1,8 @@
 use ::std::collections::{HashMap, HashSet};
+use smart_home_2::devices::device_info_provider::{
+    BorrowingDeviceInfoProvider, OwningDeviceInfoProvider,
+};
 use smart_home_2::devices::*;
-use smart_home_2::devices::device_info_provider::{BorrowingDeviceInfoProvider, OwningDeviceInfoProvider};
 use smart_home_2::smart_house::SmartHouse;
 
 fn main() {

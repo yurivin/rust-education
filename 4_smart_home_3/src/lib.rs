@@ -47,8 +47,8 @@ pub mod smart_house {
 #[cfg(test)]
 mod test {
     use crate::devices::Devices;
-    use ::std::collections::{HashMap, HashSet};
     use crate::smart_house::SmartHouse;
+    use ::std::collections::{HashMap, HashSet};
     #[test]
     fn test_smart_house_properties() {
         let house = SmartHouse {
@@ -81,9 +81,16 @@ mod test {
 
         assert_eq!(house.purpose, "For rent");
         assert_eq!(house.title, "Nice home");
-        assert!(house.get_room_devices("bedroom").get(&Devices::Speaker).unwrap().contains("Left"));
-        assert!(house.get_room_devices("bedroom").get(&Devices::Speaker).unwrap().contains("Right"));
+        assert!(house
+            .get_room_devices("bedroom")
+            .get(&Devices::Speaker)
+            .unwrap()
+            .contains("Left"));
+        assert!(house
+            .get_room_devices("bedroom")
+            .get(&Devices::Speaker)
+            .unwrap()
+            .contains("Right"));
         assert_eq!(house.get_room_devices("bedroom").len(), 1);
-
     }
 }
