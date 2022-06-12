@@ -6,6 +6,7 @@ pub mod smart_house {
 
     pub struct SmartHouse {
         pub title: String,
+        pub purpose: String,
         /// Key is a room title, value is a map of named devices
         pub devices: HashMap<String, HashMap<Devices, HashSet<String>>>,
     }
@@ -40,5 +41,49 @@ pub mod smart_house {
                 "Device is available in this room"
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::devices::Devices;
+    use ::std::collections::{HashMap, HashSet};
+    use crate::smart_house::SmartHouse;
+    #[test]
+    fn test_smart_house_properties() {
+        let house = SmartHouse {
+            title: String::from("Nice home"),
+            purpose: String::from("For rent"),
+            devices: HashMap::from([
+                (
+                    String::from("kitchen"),
+                    HashMap::from([
+                        (
+                            Devices::Rosette,
+                            HashSet::from([
+                                String::from("Left"),
+                                String::from("Right"),
+                                String::from("Center"),
+                            ]),
+                        ),
+                        (Devices::Thermometer, HashSet::from([String::from("Main")])),
+                    ]),
+                ),
+                (
+                    String::from("bedroom"),
+                    HashMap::from([(
+                        Devices::Speaker,
+                        HashSet::from([String::from("Left"), String::from("Right")]),
+                    )]),
+                ),
+            ]),
+        };
+
+        assert_eq!(house.purpose, "For rent");
+        assert_eq!(house.title, "Nice home");
+        assert!(house.get_room_devices("bedroom").get(&Devices::Speaker).unwrap().contains("Left"));
+        assert!(house.get_room_devices("bedroom").get(&Devices::Speaker).unwrap().contains("Right"));
+        assert_eq!(house.get_room_devices("bedroom").len(), 1);
+
     }
 }
