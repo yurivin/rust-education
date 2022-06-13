@@ -19,8 +19,8 @@ pub struct Device {
 
 impl<'a, 'b> DeviceInfoProvider for BorrowingDeviceInfoProvider<'a, 'b> {
     fn get_report(&self) -> String {
-        let mut temp = String::from(self.device_a.get_report());
-        temp.push_str("\n");
+        let mut temp = self.device_a.get_report();
+        temp.push('\n');
         temp.push_str(&self.device_b.get_report());
         temp
     }
@@ -29,7 +29,7 @@ impl<'a, 'b> DeviceInfoProvider for BorrowingDeviceInfoProvider<'a, 'b> {
 impl DeviceInfoProvider for Device {
     fn get_report(&self) -> String {
         let mut temp = self.title.clone();
-        temp.push_str(" ");
+        temp.push(' ');
         temp.push_str(&self.status);
         temp
     }

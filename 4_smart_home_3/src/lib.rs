@@ -20,8 +20,8 @@ pub mod smart_house {
             &self.devices
         }
 
-        pub fn get_room_devices(&self, room: &str) -> &HashMap<Devices, HashSet<String>> {
-            &self.devices.get(room).unwrap()
+        pub fn get_room_devices(&self, room: &str) -> Option<&HashMap<Devices, HashSet<String>>> {
+            self.devices.get(room)
         }
 
         pub fn get_rooms(&self) -> HashSet<&String> {
@@ -82,15 +82,15 @@ mod test {
         assert_eq!(house.purpose, "For rent");
         assert_eq!(house.title, "Nice home");
         assert!(house
-            .get_room_devices("bedroom")
+            .get_room_devices("bedroom").unwrap()
             .get(&Devices::Speaker)
             .unwrap()
             .contains("Left"));
         assert!(house
-            .get_room_devices("bedroom")
+            .get_room_devices("bedroom").unwrap()
             .get(&Devices::Speaker)
             .unwrap()
             .contains("Right"));
-        assert_eq!(house.get_room_devices("bedroom").len(), 1);
+        assert_eq!(house.get_room_devices("bedroom").unwrap().len(), 1);
     }
 }
