@@ -39,15 +39,17 @@ fn main() {
     println!("Devices: {:#?}", house.get_devices());
     println!(
         "What about a Thermometer in the kitchen?\n   {}",
-        house.check_device(Devices::Thermometer, "kitchen")
+        house.check_device(Devices::Thermometer, "kitchen").unwrap()
     );
     println!(
         "What about a Thermometer in the bedroom?\n   {}",
-        house.check_device(Devices::Thermometer, "bedroom")
+        house.check_device(Devices::Thermometer, "bedroom").unwrap()
     );
     println!(
         "What about a Thermometer in the guestroom?\n   {}",
-        house.check_device(Devices::Thermometer, "guestroom")
+        house
+            .check_device(Devices::Thermometer, "guestroom")
+            .unwrap()
     );
     println!("Rooms list: {:#?}", house.get_rooms());
     println!(
@@ -75,6 +77,9 @@ fn main() {
     };
 
     println!("Check field data {:#?}", borrower.device_a.item_type);
-    println!("Special report: {}", house.create_report(&owner));
-    println!("Special report: {}", house.create_report(&borrower));
+    println!("Special report: {}", house.create_report(&owner).unwrap());
+    println!(
+        "Special report: {}",
+        house.create_report(&borrower).unwrap()
+    );
 }

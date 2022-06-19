@@ -1,6 +1,6 @@
-use std::collections::{HashMap, HashSet};
 use smart_home_2::devices::Devices;
 use smart_home_2::smart_house::SmartHouse;
+use std::collections::{HashMap, HashSet};
 
 #[test]
 fn main_integration_test() {
@@ -33,5 +33,5 @@ fn main_integration_test() {
     };
 
     assert_eq!(house.title, String::from("Nice home"));
-    assert_eq!(house.check_device(Devices::Thermometer, "kitchen"), "Device is available in this room");
+    assert!(house.check_device(Devices::Thermometer, "kitchen").is_ok());
 }

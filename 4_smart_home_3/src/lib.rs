@@ -1,6 +1,7 @@
 pub mod devices;
 
 pub mod smart_house {
+    use crate::devices::device_info_provider::ReportError;
     use crate::devices::{DeviceInfoProvider, Devices};
     use ::std::collections::{HashMap, HashSet};
 
@@ -11,8 +12,17 @@ pub mod smart_house {
         pub devices: HashMap<String, HashMap<Devices, HashSet<String>>>,
     }
 
+    #[derive(Debug)]
+    pub enum SmartHouseError {
+        RoomNotExists,
+        DeviceNotExistsInThisRoom,
+    }
+
     impl SmartHouse {
-        pub fn create_report(&self, informer: &dyn DeviceInfoProvider) -> String {
+        pub fn create_report(
+            &self,
+            informer: &dyn DeviceInfoProvider,
+        ) -> Result<String, ReportError> {
             informer.get_report()
         }
 
@@ -32,13 +42,13 @@ pub mod smart_house {
             key_set
         }
 
-        pub fn check_device(&self, device: Devices, room: &str) -> &str {
+        pub fn check_device(&self, device: Devices, room: &str) -> Result<bool, SmartHouseError> {
             if !self.devices.contains_key(room) {
-                "Room does not exists"
+                Result::Err(SmartHouseError::RoomNotExists)
             } else if !self.devices.get(room).unwrap().contains_key(&device) {
-                "Device does not exists in this room"
+                Result::Err(SmartHouseError::DeviceNotExistsInThisRoom)
             } else {
-                "Device is available in this room"
+                Result::Ok(true)
             }
         }
     }
@@ -82,12 +92,14 @@ mod test {
         assert_eq!(house.purpose, "For rent");
         assert_eq!(house.title, "Nice home");
         assert!(house
-            .get_room_devices("bedroom").unwrap()
+            .get_room_devices("bedroom")
+            .unwrap()
             .get(&Devices::Speaker)
             .unwrap()
             .contains("Left"));
         assert!(house
-            .get_room_devices("bedroom").unwrap()
+            .get_room_devices("bedroom")
+            .unwrap()
             .get(&Devices::Speaker)
             .unwrap()
             .contains("Right"));
