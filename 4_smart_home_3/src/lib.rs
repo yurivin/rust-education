@@ -25,9 +25,13 @@ pub mod smart_house {
             }
         }
 
- /*       pub fn remove_device(&mut self, room:String, device: Devices, device_title: &String) {
-
-        }*/
+        pub fn remove_device(&mut self, room:&String, device: &Devices, device_title: &String) {
+            if self.devices.contains_key(room) &&
+                self.devices.get(room).unwrap().contains_key(device) &&
+                self.devices.get(room).unwrap().get(device).unwrap().contains(device_title) {
+                self.devices.get_mut(room).unwrap()
+                    .get_mut(device).unwrap().remove(device_title);           }
+        }
 
         pub fn add_device(&mut self, room: String, device: Devices, device_title: String) -> () {
             if self.devices.contains_key(&room) {
