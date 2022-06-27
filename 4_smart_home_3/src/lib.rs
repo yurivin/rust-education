@@ -34,7 +34,7 @@ pub mod smart_house {
         }
 
         pub fn add_device(&mut self, room: String, device: Devices, device_title: String) {
-            if self.devices.contains_key(&room) {
+            if let std::collections::hash_map::Entry::Occupied(_)= self.devices.entry(room.clone()) {
                 let room_map = self.devices.get_mut(&room).unwrap();
 
                 room_map.entry(device)

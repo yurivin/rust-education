@@ -1,7 +1,7 @@
 use smart_home_2::devices::Devices;
 use smart_home_2::smart_house::SmartHouse;
 use std::collections::{HashMap, HashSet};
-use smart_home_2::devices::Devices::Rosette;
+use smart_home_2::devices::Devices::{Rosette, Speaker};
 
 #[test]
 fn main_integration_test() {
@@ -39,6 +39,10 @@ fn main_integration_test() {
     house.add_device(String::from("bedroom"), Rosette, String::from("New rosette"));
 
     assert!(house.get_room_devices("bedroom").unwrap().get(&Rosette).unwrap().contains("New rosette"));
+    assert!(house.get_room_devices("bedroom").unwrap().get(&Speaker).unwrap().contains("Right"));
+
+    house.add_device(String::from("sportroom"), Rosette, String::from("Sport rosette"));
+    assert!(house.get_room_devices("sportroom").unwrap().get(&Rosette).unwrap().contains("Sport rosette"));
 
     house.remove_device("kitchen", &Devices::Rosette, "Left");
 
