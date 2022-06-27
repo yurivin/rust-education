@@ -44,7 +44,7 @@ pub mod device_info_provider {
     impl Display for ReportError {
         fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
             match self {
-                NoData => write!(f, "No data")
+                NoData => write!(f, "No data"),
             }
         }
     }

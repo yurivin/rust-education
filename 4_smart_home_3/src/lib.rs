@@ -19,6 +19,22 @@ pub mod smart_house {
     }
 
     impl SmartHouse {
+       pub fn add_device(&mut self, room: String, device: Devices, device_title: String) -> () {
+           if self.devices.contains_key(&room) {
+
+           } else {
+               self.devices.insert(room, HashMap::from([
+                   (
+                       device,
+                       HashSet::from([
+                           device_title
+                       ]),
+                   ),
+                   (Devices::Thermometer, HashSet::from([String::from("Main")])),
+               ]));
+           }
+        }
+
         pub fn create_report(
             &self,
             informer: &dyn DeviceInfoProvider,
