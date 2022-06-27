@@ -1,10 +1,11 @@
 use smart_home_2::devices::Devices;
 use smart_home_2::smart_house::SmartHouse;
 use std::collections::{HashMap, HashSet};
+use smart_home_2::devices::Devices::Rosette;
 
 #[test]
 fn main_integration_test() {
-    let house = SmartHouse {
+    let mut house = SmartHouse {
         title: String::from("Nice home"),
         purpose: String::from("For rent"),
         devices: HashMap::from([
@@ -34,4 +35,16 @@ fn main_integration_test() {
 
     assert_eq!(house.title, String::from("Nice home"));
     assert!(house.check_device(Devices::Thermometer, "kitchen").is_ok());
+
+    house.add_device(String::from("bedroom"), Rosette, String::from("New rosette"));
+
+    assert!(house.get_room_devices("bedroom").unwrap().get(&Rosette).unwrap().contains("New rosette"));
+
+    house.remove_device("kitchen", &Devices::Rosette, "Left");
+
+    assert!(!house.get_room_devices("kitchen").unwrap().get(&Rosette).unwrap().contains("Left"));
+
+    house.remove_room("bedroom");
+
+    assert!(!house.get_rooms().contains(&String::from("bedroom")));
 }
