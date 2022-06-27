@@ -19,20 +19,36 @@ pub mod smart_house {
     }
 
     impl SmartHouse {
-       pub fn add_device(&mut self, room: String, device: Devices, device_title: String) -> () {
-           if self.devices.contains_key(&room) {
+        pub fn remove_room(&mut self, room: &String) -> () {
+            if self.devices.contains_key(room) {
+                self.devices.remove(room);
+            }
+        }
 
-           } else {
-               self.devices.insert(room, HashMap::from([
-                   (
-                       device,
-                       HashSet::from([
-                           device_title
-                       ]),
-                   ),
-                   (Devices::Thermometer, HashSet::from([String::from("Main")])),
-               ]));
-           }
+ /*       pub fn remove_device(&mut self, room:String, device: Devices, device_title: &String) {
+
+        }*/
+
+        pub fn add_device(&mut self, room: String, device: Devices, device_title: String) -> () {
+            if self.devices.contains_key(&room) {
+                let room_map = self.devices.get_mut(&room).unwrap();
+                if room_map.contains_key(&device) {
+                    room_map
+                        .get_mut(&device)
+                        .unwrap()
+                        .extend(HashSet::from([device_title]).into_iter());
+                } else {
+                    room_map.insert(device, HashSet::from([device_title]));
+                }
+            } else {
+                self.devices.insert(
+                    room,
+                    HashMap::from([
+                        (device, HashSet::from([device_title])),
+                        (Devices::Thermometer, HashSet::from([String::from("Main")])),
+                    ]),
+                );
+            }
         }
 
         pub fn create_report(
