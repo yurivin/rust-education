@@ -1,7 +1,7 @@
-use smart_home_2::devices::Devices;
-use smart_home_2::smart_house::SmartHouse;
 use std::collections::{HashMap, HashSet};
-use smart_home_2::devices::Devices::{Rosette, Speaker};
+use smart_house::devices::Devices;
+use smart_house::devices::Devices::{Rosette, Speaker};
+use smart_house::smart_house::SmartHouse;
 
 #[test]
 fn main_integration_test() {

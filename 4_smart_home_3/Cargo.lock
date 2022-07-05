@@ -28,7 +28,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "smart_home_2"
+name = "sh_server"
+version = "0.1.0"
+dependencies = [
+ "smart_house",
+]
+
+[[package]]
+name = "smart_house"
 version = "0.1.0"
 
 [[package]]

@@ -1,9 +1,8 @@
 use ::std::collections::{HashMap, HashSet};
-use smart_home_2::devices::device_info_provider::{
-    BorrowingDeviceInfoProvider, OwningDeviceInfoProvider,
-};
-use smart_home_2::devices::*;
-use smart_home_2::smart_house::SmartHouse;
+use smart_house::devices::device_info_provider::{BorrowingDeviceInfoProvider, OwningDeviceInfoProvider};
+
+use smart_house::devices::{Device, Devices};
+use smart_house::smart_house::SmartHouse;
 
 fn main() {
     println!("Hello, Smart house 2!");

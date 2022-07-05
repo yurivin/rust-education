@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-    "smart_home",
-    "iotp"
+    "smart_house",
+    "iotp",
+    "sh_server"
 ]

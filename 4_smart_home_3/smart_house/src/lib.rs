@@ -18,6 +18,38 @@ pub mod smart_house {
         DeviceNotExistsInThisRoom,
     }
 
+    impl Default for SmartHouse {
+        fn default() -> Self {
+            SmartHouse {
+                title: String::from("Nice home"),
+                purpose: String::from("For rent"),
+                devices: HashMap::from([
+                    (
+                        String::from("kitchen"),
+                        HashMap::from([
+                            (
+                                Devices::Rosette,
+                                HashSet::from([
+                                    String::from("Left"),
+                                    String::from("Right"),
+                                    String::from("Center"),
+                                ]),
+                            ),
+                            (Devices::Thermometer, HashSet::from([String::from("Main")])),
+                        ]),
+                    ),
+                    (
+                        String::from("bedroom"),
+                        HashMap::from([(
+                            Devices::Speaker,
+                            HashSet::from([String::from("Left"), String::from("Right")]),
+                        )]),
+                    ),
+                ]),
+            }
+        }
+    }
+
     impl SmartHouse {
         pub fn remove_room(&mut self, room: &str) {
             if self.devices.contains_key(room) {
