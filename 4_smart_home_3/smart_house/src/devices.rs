@@ -1,7 +1,6 @@
+use std::fmt;
 use crate::devices::device_info_provider::ReportError;
-use std::time::{SystemTime, UNIX_EPOCH};
 use crate::smart_house::{SmartHouse, SmartHouseError};
-use crate::smart_house::SmartHouseError::PowerError;
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -14,9 +13,43 @@ pub enum Devices {
     Speaker,
 }
 
+#[derive(Debug)]
+pub enum DeviceState {
+    Active
+}
+
+impl fmt::Display for DeviceState {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
+
 impl Devices {
-    pub fn current_power(device_title: &str, room_id: &str, house: &SmartHouse) -> Result<f32, SmartHouseError> {
+    pub fn power(device_title: &str, room_id: &str, house: &SmartHouse, device_type: Devices) -> Result<f32, SmartHouseError> {
+        println!("Showing power for house {} room {} device {} of type {:?}", house.title, room_id, device_title, device_type);
             Ok(device_title.len() as f32)
+    }
+
+    pub fn get_state(device_title: &str, room_id: &str, house: &SmartHouse, device_type: Devices) -> Option<DeviceState> {
+        println!("Showing state for house {} room {} device {} of type {:?}", house.title, room_id, device_title, device_type);
+        let room_devices_option = house.get_room_devices(room_id);
+        println!("There are devices in the room: {}", room_devices_option.is_some());
+        println!("There are devices of type {:?} in the room: {:?}", device_type, room_devices_option.unwrap().get(&device_type).is_some());
+        println!("list of devices of type {:?} in the room: {:?}", device_type, room_devices_option.unwrap().get(&device_type).unwrap());
+        let typed_devices = room_devices_option.unwrap().get(&device_type).unwrap();
+        println!("Room contains device with name {}: {}", device_title, typed_devices.contains(device_title));
+
+        if room_devices_option.is_some()
+            && room_devices_option.unwrap().get(&device_type).is_some() {
+            let availability = room_devices_option.unwrap().get(&device_type).unwrap().get(device_title.trim());
+            println!("Availability: {}", availability.is_some());
+            match availability {
+                Some(_) => return Some(DeviceState::Active),
+                None => return None
+            }
+        }
+        None
     }
 }
 

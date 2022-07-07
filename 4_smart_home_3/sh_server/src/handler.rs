@@ -36,19 +36,23 @@ impl RequestHandler {
             return "No device name received".into();
         }
         match command {
-            "rosette_state" => self.get_rosette_state(room_id, rosette),
-            "rosette_power" => self.get_rosette_power(room_id, rosette),
+            "state" => self.get_rosette_state(room_id, rosette),
+            "power" => self.get_rosette_power(room_id, rosette),
             _ => "Bad command".into(),
         }
     }
 
     fn get_rosette_state(&self, room_id: &str, rosette: &str) -> String {
-        let power = Devices::current_power(rosette, room_id, &self.house).unwrap_or(0 as f32);
-        power.to_string()
+        let state = Devices::get_state(rosette, room_id, &self.house, Devices::Rosette);
+        match state {
+            Some(status) => status.to_string(),
+            None => "Unknown device".to_string()
+        }
     }
 
     fn get_rosette_power(&self, room_id: &str, rosette: &str) -> String {
-        String::from("default get_rosette_power response")
+        let power = Devices::power(rosette.trim(), room_id.trim(), &self.house, Devices::Rosette).unwrap_or(0 as f32);
+        power.to_string()
     }
 
 }
@@ -65,21 +69,41 @@ mod tests {
 
         let room_id = String::from("kitchen");
         let rossette_title = String::from("Left\r\n");
-        let req_str = format!("rosette_state|||{}|||{}", room_id, rossette_title);
+        let req_str = format!("power|||{}|||{}", room_id, rossette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);
 
-        assert_eq!(6.to_string(), fetched);
+        assert_eq!(4.to_string(), fetched);
 
         // Test case 2
         let room_id = String::from("pitchen");
-        let rossette_title = String::from("Left\r\n");
-        let req_str = format!("rosette_state|||{}|||{}", room_id, rossette_title);
+        let rosette_title = String::from("Left\r\n");
+        let req_str = format!("power|||{}|||{}", room_id, rosette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);
 
-        assert_eq!(6.to_string(), fetched);
+        assert_eq!(4.to_string(), fetched);
+
+        //Test case 3
+        let room_id = String::from("kitchen");
+        let rosette_title = String::from("Left\r\n");
+        let req_str = format!("state|||{}|||{}", room_id, rosette_title);
+        let req = Request::new(&req_str);
+
+        let fetched = handler.handle(req);
+
+        assert_eq!("Active", fetched);
+
+        //Test case 4
+        let room_id = String::from("kitchen");
+        let rossette_title = String::from("Beft\r\n");
+        let req_str = format!("state|||{}|||{}", room_id, rossette_title);
+        let req = Request::new(&req_str);
+
+        let fetched = handler.handle(req);
+
+        assert_eq!("Unknown device", fetched);
     }
 }
