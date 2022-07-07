@@ -15,7 +15,8 @@ pub enum Devices {
 
 #[derive(Debug)]
 pub enum DeviceState {
-    Active
+    Active,
+    Available
 }
 
 impl fmt::Display for DeviceState {
@@ -56,7 +57,7 @@ impl Devices {
 pub struct Device {
     pub title: String,
     pub item_type: Devices,
-    pub status: String,
+    pub status: DeviceState,
 }
 
 impl DeviceInfoProvider for Device {
@@ -66,7 +67,7 @@ impl DeviceInfoProvider for Device {
         } else {
             let mut temp = self.title.clone();
             temp.push(' ');
-            temp.push_str(&self.status);
+            temp.push_str(&self.status.to_string());
             Ok(temp)
         }
     }

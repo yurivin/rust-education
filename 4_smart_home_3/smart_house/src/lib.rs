@@ -1,8 +1,8 @@
 pub mod devices;
 
 pub mod smart_house {
-    use crate::devices::device_info_provider::ReportError;
-    use crate::devices::{DeviceInfoProvider, Devices};
+    use crate::devices::device_info_provider::{OwningDeviceInfoProvider, ReportError};
+    use crate::devices::{Device, DeviceInfoProvider, Devices, DeviceState};
     use ::std::collections::{HashMap, HashSet};
 
     pub struct SmartHouse {
@@ -10,6 +10,7 @@ pub mod smart_house {
         pub purpose: String,
         /// Key is a room title, value is a map of named devices
         pub devices: HashMap<String, HashMap<Devices, HashSet<String>>>,
+        pub store: HashMap<String, OwningDeviceInfoProvider>
     }
 
     #[derive(Debug)]
@@ -25,6 +26,17 @@ pub mod smart_house {
             SmartHouse {
                 title: String::from("Nice home"),
                 purpose: String::from("For rent"),
+                store: HashMap::from([
+                    (String::from("kitchenRosetteLeft"),
+                        OwningDeviceInfoProvider {
+                            device: Device {
+                                title: String::from("Left"),
+                                item_type: Devices::Rosette,
+                                status: DeviceState::Available
+                            }
+                        }
+                    )
+                ]),
                 devices: HashMap::from([
                     (
                         String::from("kitchen"),
