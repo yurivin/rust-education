@@ -1,4 +1,5 @@
 use std::str::Split;
+use smart_house::devices::Devices;
 use smart_house::smart_house::SmartHouse;
 
 pub struct Request<'a>(Split<'a, &'a str>);
@@ -14,12 +15,12 @@ impl<'a> Request<'a> {
 }
 
 pub struct RequestHandler {
-    home: SmartHouse,
+    house: SmartHouse,
 }
 
 impl RequestHandler {
     pub fn new(home: SmartHouse) -> Self {
-        Self { home }
+        Self {house: home}
     }
 
     pub fn handle(&mut self, mut request: Request) -> String {
@@ -42,7 +43,8 @@ impl RequestHandler {
     }
 
     fn get_rosette_state(&self, room_id: &str, rosette: &str) -> String {
-        String::from("default get_rosette_state response")
+        let power = Devices::current_power(rosette, room_id, &self.house).unwrap_or(0 as f32);
+        power.to_string()
     }
 
     fn get_rosette_power(&self, room_id: &str, rosette: &str) -> String {
@@ -58,8 +60,8 @@ mod tests {
 
     #[test]
     fn test_commands() {
-        let chat = SmartHouse::default();
-        let mut handler = RequestHandler::new(chat);
+        let house = SmartHouse::default();
+        let mut handler = RequestHandler::new(house);
 
         let room_id = String::from("kitchen");
         let rossette_title = String::from("Left\r\n");
@@ -68,6 +70,16 @@ mod tests {
 
         let fetched = handler.handle(req);
 
-        assert_eq!(String::from("default get_rosette_state response"), fetched);
+        assert_eq!(6.to_string(), fetched);
+
+        // Test case 2
+        let room_id = String::from("pitchen");
+        let rossette_title = String::from("Left\r\n");
+        let req_str = format!("rosette_state|||{}|||{}", room_id, rossette_title);
+        let req = Request::new(&req_str);
+
+        let fetched = handler.handle(req);
+
+        assert_eq!(6.to_string(), fetched);
     }
 }

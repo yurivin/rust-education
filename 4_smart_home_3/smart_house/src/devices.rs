@@ -1,4 +1,7 @@
 use crate::devices::device_info_provider::ReportError;
+use std::time::{SystemTime, UNIX_EPOCH};
+use crate::smart_house::{SmartHouse, SmartHouseError};
+use crate::smart_house::SmartHouseError::PowerError;
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -9,6 +12,12 @@ pub enum Devices {
     Rosette,
     Thermometer,
     Speaker,
+}
+
+impl Devices {
+    pub fn current_power(device_title: &str, room_id: &str, house: &SmartHouse) -> Result<f32, SmartHouseError> {
+            Ok(device_title.len() as f32)
+    }
 }
 
 pub struct Device {

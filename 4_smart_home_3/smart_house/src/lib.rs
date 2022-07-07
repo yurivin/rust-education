@@ -16,6 +16,7 @@ pub mod smart_house {
     pub enum SmartHouseError {
         RoomNotExists,
         DeviceNotExistsInThisRoom,
+        PowerError
     }
 
     impl Default for SmartHouse {
