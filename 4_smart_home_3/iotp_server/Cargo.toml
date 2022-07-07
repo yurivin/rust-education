@@ -1,5 +1,5 @@
 [package]
-name = "sh_server"
+name = "iotp_server"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,7 @@ edition = "2021"
 
 [dependencies]
 smart_house = { path = "../smart_house" }
+iotp = { path = "../iotp" }
+anyhow = "1.0.51"
+
 

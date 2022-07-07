@@ -3,5 +3,6 @@
 members = [
     "smart_house",
     "iotp",
-    "sh_server"
+    "iotp_server",
+    "iotp_client"
 ]

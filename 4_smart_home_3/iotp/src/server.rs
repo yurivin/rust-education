@@ -5,11 +5,11 @@ use std::net::{SocketAddr, TcpListener, TcpStream, ToSocketAddrs};
 use thiserror::Error;
 
 /// Represent STP server, that can accept incoming connections.
-pub struct StpServer {
+pub struct IotpServer {
     tcp: TcpListener,
 }
 
-impl StpServer {
+impl IotpServer {
     /// Binds server to specefied socket.
     pub fn bind<Addrs>(addrs: Addrs) -> BindResult
     where
@@ -39,7 +39,7 @@ impl StpServer {
     }
 }
 
-pub type BindResult = Result<StpServer, BindError>;
+pub type BindResult = Result<IotpServer, BindError>;
 
 /// Bind to socket error
 #[derive(Debug, Error)]

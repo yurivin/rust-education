@@ -19,6 +19,7 @@ pub mod smart_house {
         PowerError
     }
 
+
     impl Default for SmartHouse {
         fn default() -> Self {
             SmartHouse {
