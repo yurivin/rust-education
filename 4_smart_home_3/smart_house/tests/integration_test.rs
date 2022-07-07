@@ -1,4 +1,3 @@
-use std::collections::{HashMap, HashSet};
 use smart_house::devices::Devices;
 use smart_house::devices::Devices::{Rosette, Speaker};
 use smart_house::smart_house::SmartHouse;

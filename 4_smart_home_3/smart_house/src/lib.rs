@@ -17,7 +17,8 @@ pub mod smart_house {
     pub enum SmartHouseError {
         RoomNotExists,
         DeviceNotExistsInThisRoom,
-        PowerError
+        PowerError,
+        UnknownDeviceType
     }
 
 
@@ -154,7 +155,7 @@ pub mod smart_house {
 mod test {
     use crate::devices::Devices;
     use crate::smart_house::SmartHouse;
-    use ::std::collections::{HashMap, HashSet};
+
     #[test]
     fn test_smart_house_properties() {
         let house = SmartHouse::default();

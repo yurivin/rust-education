@@ -1,4 +1,3 @@
-use ::std::collections::{HashMap, HashSet};
 use smart_house::devices::device_info_provider::{
     BorrowingDeviceInfoProvider, OwningDeviceInfoProvider,
 };

@@ -1,6 +1,6 @@
 use smart_house::devices::Devices;
 use smart_house::smart_house::SmartHouse;
-use std::str::Split;
+use std::str::{FromStr, Split};
 pub struct Request<'a>(Split<'a, &'a str>);
 
 impl<'a> Request<'a> {
@@ -30,31 +30,43 @@ impl RequestHandler {
             return "No room id received".into();
         }
 
-        let rosette = request.next();
-        if rosette.is_empty() {
+        let device_type = request.next();
+        if device_type.is_empty() {
+            return "No device type received".into();
+        }
+
+        let device = request.next();
+        if device.is_empty() {
             return "No device name received".into();
         }
         match command {
-            "state" => self.get_rosette_state(room_id, rosette),
-            "power" => self.get_rosette_power(room_id, rosette),
+            "state" => self.get_state(room_id, device_type, device),
+            "power" => self.get_power(room_id, device_type, device),
+       //     "switch" =>
             _ => "Bad command".into(),
         }
     }
 
-    fn get_rosette_state(&self, room_id: &str, rosette: &str) -> String {
-        let state = Devices::get_state(rosette, room_id, &self.house, Devices::Rosette);
+  //  fn switch
+
+    fn get_state(&self, room_id: &str, device_type: &str, rosette: &str) -> String {
+        let unknown = String::from("Unknown device");
+        let device_type = Devices::from_str(device_type).expect(&unknown);
+        let state = Devices::get_state(rosette, room_id, &self.house, device_type);
         match state {
             Some(status) => status.to_string(),
-            None => "Unknown device".to_string(),
+            None => return unknown,
         }
     }
 
-    fn get_rosette_power(&self, room_id: &str, rosette: &str) -> String {
+    fn get_power(&self, room_id: &str, device_type: &str, rosette: &str) -> String {
+        let unknown = String::from("Unknown device");
+        let device_type = Devices::from_str(device_type).expect(&unknown);
         let power = Devices::power(
             rosette.trim(),
             room_id.trim(),
             &self.house,
-            Devices::Rosette,
+            device_type,
         )
         .unwrap_or(0 as f32);
         power.to_string()
@@ -63,6 +75,7 @@ impl RequestHandler {
 
 #[cfg(test)]
 mod tests {
+    use smart_house::devices::Devices;
     use crate::handler::{Request, RequestHandler};
     use smart_house::smart_house::SmartHouse;
 
@@ -72,8 +85,9 @@ mod tests {
         let mut handler = RequestHandler::new(house);
 
         let room_id = String::from("kitchen");
+        let device_type = Devices::Rosette.to_string();
         let rossette_title = String::from("Left\r\n");
-        let req_str = format!("power|||{}|||{}", room_id, rossette_title);
+        let req_str = format!("power|||{}|||{}|||{}", room_id, device_type, rossette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);
@@ -82,8 +96,9 @@ mod tests {
 
         // Test case 2
         let room_id = String::from("pitchen");
+        let device_type = Devices::Rosette.to_string();
         let rosette_title = String::from("Left\r\n");
-        let req_str = format!("power|||{}|||{}", room_id, rosette_title);
+        let req_str = format!("power|||{}|||{}|||{}", room_id, device_type, rosette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);
@@ -92,8 +107,9 @@ mod tests {
 
         //Test case 3
         let room_id = String::from("kitchen");
+        let device_type = Devices::Rosette.to_string();
         let rosette_title = String::from("Left\r\n");
-        let req_str = format!("state|||{}|||{}", room_id, rosette_title);
+        let req_str = format!("state|||{}|||{}|||{}", room_id, device_type, rosette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);
@@ -102,8 +118,9 @@ mod tests {
 
         //Test case 4
         let room_id = String::from("kitchen");
-        let rossette_title = String::from("Beft\r\n");
-        let req_str = format!("state|||{}|||{}", room_id, rossette_title);
+        let device_type = Devices::Rosette.to_string();
+        let rosette_title = String::from("Beft\r\n");
+        let req_str = format!("state|||{}|||{}|||{}", room_id, device_type, rosette_title);
         let req = Request::new(&req_str);
 
         let fetched = handler.handle(req);

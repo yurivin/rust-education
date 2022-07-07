@@ -1,6 +1,7 @@
 use std::fmt;
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
+use std::str::FromStr;
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -11,6 +12,25 @@ pub enum Devices {
     Rosette,
     Thermometer,
     Speaker,
+}
+
+impl fmt::Display for Devices {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
+impl FromStr for Devices {
+    type Err = SmartHouseError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "Rosette" => Ok(Devices::Rosette),
+            "Thermometer" => Ok(Devices::Thermometer),
+            "Speaker" => Ok(Devices::Speaker),
+            _ => Err(SmartHouseError::UnknownDeviceType)
+        }
+    }
 }
 
 #[derive(Debug)]
