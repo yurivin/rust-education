@@ -157,33 +157,7 @@ mod test {
     use ::std::collections::{HashMap, HashSet};
     #[test]
     fn test_smart_house_properties() {
-        let house = SmartHouse {
-            title: String::from("Nice home"),
-            purpose: String::from("For rent"),
-            devices: HashMap::from([
-                (
-                    String::from("kitchen"),
-                    HashMap::from([
-                        (
-                            Devices::Rosette,
-                            HashSet::from([
-                                String::from("Left"),
-                                String::from("Right"),
-                                String::from("Center"),
-                            ]),
-                        ),
-                        (Devices::Thermometer, HashSet::from([String::from("Main")])),
-                    ]),
-                ),
-                (
-                    String::from("bedroom"),
-                    HashMap::from([(
-                        Devices::Speaker,
-                        HashSet::from([String::from("Left"), String::from("Right")]),
-                    )]),
-                ),
-            ]),
-        };
+        let house = SmartHouse::default();
 
         assert_eq!(house.purpose, "For rent");
         assert_eq!(house.title, "Nice home");

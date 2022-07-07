@@ -9,33 +9,7 @@ use smart_house::smart_house::SmartHouse;
 fn main() {
     println!("Hello, Smart house 2!");
 
-    let house = SmartHouse {
-        title: String::from("Nice home"),
-        purpose: String::from("For rent"),
-        devices: HashMap::from([
-            (
-                String::from("kitchen"),
-                HashMap::from([
-                    (
-                        Devices::Rosette,
-                        HashSet::from([
-                            String::from("Left"),
-                            String::from("Right"),
-                            String::from("Center"),
-                        ]),
-                    ),
-                    (Devices::Thermometer, HashSet::from([String::from("Main")])),
-                ]),
-            ),
-            (
-                String::from("bedroom"),
-                HashMap::from([(
-                    Devices::Speaker,
-                    HashSet::from([String::from("Left"), String::from("Right")]),
-                )]),
-            ),
-        ]),
-    };
+    let house = SmartHouse::default();
     println!("My smart house name is {}", house.title);
     println!("Devices: {:#?}", house.get_devices());
     println!(
