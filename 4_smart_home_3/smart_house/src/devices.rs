@@ -7,7 +7,7 @@ pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
 }
 
-#[derive(Hash, Eq, PartialEq, Debug)]
+#[derive(Hash, Eq, PartialEq, Debug, Clone)]
 pub enum Devices {
     Rosette,
     Thermometer,
@@ -33,10 +33,19 @@ impl FromStr for Devices {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum DeviceState {
     Active,
     Available
+}
+
+impl DeviceState {
+    pub fn opposite(&self) -> DeviceState {
+        match self {
+            DeviceState::Active => return DeviceState::Available,
+            DeviceState::Available => return DeviceState::Active
+        }
+    }
 }
 
 impl fmt::Display for DeviceState {
@@ -74,6 +83,7 @@ impl Devices {
     }
 }
 
+#[derive(Clone)]
 pub struct Device {
     pub title: String,
     pub item_type: Devices,

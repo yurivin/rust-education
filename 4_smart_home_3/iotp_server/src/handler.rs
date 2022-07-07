@@ -1,6 +1,9 @@
-use smart_house::devices::Devices;
+use std::ops::Add;
+use smart_house::devices::{Device, Devices};
 use smart_house::smart_house::SmartHouse;
 use std::str::{FromStr, Split};
+use smart_house::devices::device_info_provider::OwningDeviceInfoProvider;
+
 pub struct Request<'a>(Split<'a, &'a str>);
 
 impl<'a> Request<'a> {
@@ -18,6 +21,7 @@ pub struct RequestHandler {
 }
 
 impl RequestHandler {
+
     pub fn new(home: SmartHouse) -> Self {
         Self { house: home }
     }
@@ -42,12 +46,27 @@ impl RequestHandler {
         match command {
             "state" => self.get_state(room_id, device_type, device),
             "power" => self.get_power(room_id, device_type, device),
-       //     "switch" =>
+            "switch" => self.switch(room_id.trim(), device_type.trim(), device.trim()),
             _ => "Bad command".into(),
         }
     }
 
-  //  fn switch
+    fn switch(&mut self, room_id: &str, device_type: &str, rosette: &str) -> String {
+        let store_id = room_id.to_owned().add(device_type).add(rosette);
+        if self.house.store.get(&store_id).is_some() {
+            let device_old = &self.house.store.get(&store_id).unwrap().device.clone();
+            self.house.store.insert(store_id.clone(), OwningDeviceInfoProvider {
+                device: Device {
+                    title: device_old.title.clone(),
+                    item_type: device_old.item_type.clone(),
+                    status: device_old.status.opposite()
+                }
+            });
+            "Switched to ".to_owned().add(&self.house.store.get(&store_id).unwrap().device.status.to_string())
+        } else {
+            String::from("Unknown device")
+        }
+    }
 
     fn get_state(&self, room_id: &str, device_type: &str, rosette: &str) -> String {
         let unknown = String::from("Unknown device");
@@ -75,7 +94,7 @@ impl RequestHandler {
 
 #[cfg(test)]
 mod tests {
-    use smart_house::devices::Devices;
+    use smart_house::devices::{Devices};
     use crate::handler::{Request, RequestHandler};
     use smart_house::smart_house::SmartHouse;
 
@@ -126,5 +145,19 @@ mod tests {
         let fetched = handler.handle(req);
 
         assert_eq!("Unknown device", fetched);
+
+        //Test case 5
+        let room_id = String::from("kitchen");
+        let device_type = Devices::Rosette.to_string();
+        let rosette_title = String::from("Left\r\n");
+        let req_str = format!("switch|||{}|||{}|||{}", room_id, device_type, rosette_title);
+        let req = Request::new(&req_str);
+        println!("kitchenRosetteLeft state is {}", handler.house.store.get("kitchenRosetteLeft").unwrap().device.status.to_string());
+        assert_eq!("Available", handler.house.store.get("kitchenRosetteLeft").unwrap().device.status.to_string());
+
+        let fetched = handler.handle(req);
+
+        assert_eq!("Switched to Active", fetched);
+        assert_eq!("Active", handler.house.store.get("kitchenRosetteLeft").unwrap().device.status.to_string())
     }
 }
