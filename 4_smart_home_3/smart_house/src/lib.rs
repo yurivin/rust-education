@@ -35,6 +35,24 @@ pub mod smart_house {
                                 status: DeviceState::Available
                             }
                         }
+                    ),
+                    (String::from("kitchenRosetteRight"),
+                     OwningDeviceInfoProvider {
+                         device: Device {
+                             title: String::from("Right"),
+                             item_type: Devices::Rosette,
+                             status: DeviceState::Available
+                         }
+                     }
+                    ),
+                    (String::from("kitchenRosetteCenter"),
+                     OwningDeviceInfoProvider {
+                         device: Device {
+                             title: String::from("Center"),
+                             item_type: Devices::Rosette,
+                             status: DeviceState::Available
+                         }
+                     }
                     )
                 ]),
                 devices: HashMap::from([
