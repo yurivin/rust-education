@@ -1,10 +1,10 @@
 mod handler;
 
 use handler::{Request, RequestHandler};
-use std::error::Error;
-use std::{fs, thread};
 use iotp::server::{IotpConnection, IotpServer};
 use smart_house::smart_house::SmartHouse;
+use std::error::Error;
+use std::{fs, thread};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let addr =
@@ -36,7 +36,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn handle_connection(mut connection: IotpConnection, house: SmartHouse) -> Result<(), anyhow::Error> {
+fn handle_connection(
+    mut connection: IotpConnection,
+    house: SmartHouse,
+) -> Result<(), anyhow::Error> {
     let mut handler = RequestHandler::new(house);
     loop {
         let req_str = connection.recv_request()?;

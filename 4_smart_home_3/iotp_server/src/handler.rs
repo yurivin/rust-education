@@ -1,7 +1,6 @@
-use std::str::Split;
 use smart_house::devices::Devices;
 use smart_house::smart_house::SmartHouse;
-
+use std::str::Split;
 pub struct Request<'a>(Split<'a, &'a str>);
 
 impl<'a> Request<'a> {
@@ -20,7 +19,7 @@ pub struct RequestHandler {
 
 impl RequestHandler {
     pub fn new(home: SmartHouse) -> Self {
-        Self {house: home}
+        Self { house: home }
     }
 
     pub fn handle(&mut self, mut request: Request) -> String {
@@ -46,21 +45,26 @@ impl RequestHandler {
         let state = Devices::get_state(rosette, room_id, &self.house, Devices::Rosette);
         match state {
             Some(status) => status.to_string(),
-            None => "Unknown device".to_string()
+            None => "Unknown device".to_string(),
         }
     }
 
     fn get_rosette_power(&self, room_id: &str, rosette: &str) -> String {
-        let power = Devices::power(rosette.trim(), room_id.trim(), &self.house, Devices::Rosette).unwrap_or(0 as f32);
+        let power = Devices::power(
+            rosette.trim(),
+            room_id.trim(),
+            &self.house,
+            Devices::Rosette,
+        )
+        .unwrap_or(0 as f32);
         power.to_string()
     }
-
 }
 
 #[cfg(test)]
 mod tests {
-    use smart_house::smart_house::SmartHouse;
     use crate::handler::{Request, RequestHandler};
+    use smart_house::smart_house::SmartHouse;
 
     #[test]
     fn test_commands() {

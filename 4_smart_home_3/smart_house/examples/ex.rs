@@ -1,7 +1,9 @@
 use ::std::collections::{HashMap, HashSet};
-use smart_house::devices::device_info_provider::{BorrowingDeviceInfoProvider, OwningDeviceInfoProvider};
+use smart_house::devices::device_info_provider::{
+    BorrowingDeviceInfoProvider, OwningDeviceInfoProvider,
+};
 
-use smart_house::devices::{Device, Devices};
+use smart_house::devices::{Device, DeviceState, Devices};
 use smart_house::smart_house::SmartHouse;
 
 fn main() {
@@ -58,14 +60,14 @@ fn main() {
 
     let device_two = Device {
         title: String::from("Tongo"),
-        status: String::from("Passive"),
+        status: DeviceState::Available,
         item_type: Devices::Thermometer,
     };
 
     let owner = OwningDeviceInfoProvider {
         device: Device {
             title: String::from("Bongo"),
-            status: String::from("Active"),
+            status: DeviceState::Active,
             item_type: Devices::Thermometer,
         },
     };
