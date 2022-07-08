@@ -33,7 +33,6 @@ mod tests {
     use crate::HouseClient;
     use iotp_server::runner;
     use std::thread;
-    use std::time::Duration;
 
     #[test]
     fn it_works() {
@@ -47,7 +46,6 @@ mod tests {
         });
 
         let wclient = HouseClient::new(address.clone());
-       // thread::sleep(Duration::from_millis(2000));
         let mut client = wclient.expect("Unsuccessful connection");
 
         //Test case 1 - state
