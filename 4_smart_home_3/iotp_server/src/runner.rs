@@ -2,7 +2,7 @@ use crate::handler::{Request, RequestHandler};
 use iotp::server::{IotpConnection, IotpServer};
 use smart_house::smart_house::SmartHouse;
 use std::error::Error;
-use std::{thread};
+use std::thread;
 
 pub fn run(addr: String) -> Result<(), Box<dyn Error>> {
     let server = IotpServer::bind(addr)?;
