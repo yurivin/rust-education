@@ -47,10 +47,35 @@ mod tests {
         });
 
         let wclient = HouseClient::new(address.clone());
-        thread::sleep(Duration::from_millis(2000));
-        let client = wclient.expect("Unsuccessful connection");
+       // thread::sleep(Duration::from_millis(2000));
+        let mut client = wclient.expect("Unsuccessful connection");
 
         //Test case 1 - state
-        // let client = wclient.expect("Unsuccessful connect");
+        let request_result = client.state("kitchen", "Rosette", "Left");
+        assert!(request_result.is_ok());
+        let result = request_result.unwrap();
+        assert_eq!("Active", result);
+
+        //Test case 2 - power
+        let request_result = client.power("kitchen", "Rosette", "Left");
+        assert!(request_result.is_ok());
+        let result = request_result.unwrap();
+        assert_eq!("4", result);
+
+        //Test case 2 - switch 3 times from Available to Active -> Available -> Active
+        let request_result = client.switch("kitchen", "Rosette", "Left");
+        assert!(request_result.is_ok());
+        let result = request_result.unwrap();
+        assert_eq!("Switched to Active", result);
+
+        let request_result = client.switch("kitchen", "Rosette", "Left");
+        assert!(request_result.is_ok());
+        let result = request_result.unwrap();
+        assert_eq!("Switched to Available", result);
+
+        let request_result = client.switch("kitchen", "Rosette", "Left");
+        assert!(request_result.is_ok());
+        let result = request_result.unwrap();
+        assert_eq!("Switched to Active", result);
     }
 }
