@@ -85,7 +85,7 @@ impl RequestHandler {
         let state = Devices::get_state(rosette, room_id, &self.house, device_type);
         match state {
             Some(status) => status.to_string(),
-            None => return unknown,
+            None => unknown,
         }
     }
 

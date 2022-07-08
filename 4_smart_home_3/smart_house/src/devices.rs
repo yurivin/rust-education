@@ -42,8 +42,8 @@ pub enum DeviceState {
 impl DeviceState {
     pub fn opposite(&self) -> DeviceState {
         match self {
-            DeviceState::Active => return DeviceState::Available,
-            DeviceState::Available => return DeviceState::Active,
+            DeviceState::Active => DeviceState::Available,
+            DeviceState::Available => DeviceState::Active,
         }
     }
 }
