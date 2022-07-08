@@ -2,7 +2,7 @@ pub mod devices;
 
 pub mod smart_house {
     use crate::devices::device_info_provider::{OwningDeviceInfoProvider, ReportError};
-    use crate::devices::{Device, DeviceInfoProvider, Devices, DeviceState};
+    use crate::devices::{Device, DeviceInfoProvider, DeviceState, Devices};
     use ::std::collections::{HashMap, HashSet};
 
     pub struct SmartHouse {
@@ -10,7 +10,7 @@ pub mod smart_house {
         pub purpose: String,
         /// Key is a room title, value is a map of named devices
         pub devices: HashMap<String, HashMap<Devices, HashSet<String>>>,
-        pub store: HashMap<String, OwningDeviceInfoProvider>
+        pub store: HashMap<String, OwningDeviceInfoProvider>,
     }
 
     #[derive(Debug)]
@@ -18,9 +18,8 @@ pub mod smart_house {
         RoomNotExists,
         DeviceNotExistsInThisRoom,
         PowerError,
-        UnknownDeviceType
+        UnknownDeviceType,
     }
-
 
     impl Default for SmartHouse {
         fn default() -> Self {
@@ -28,33 +27,36 @@ pub mod smart_house {
                 title: String::from("Nice home"),
                 purpose: String::from("For rent"),
                 store: HashMap::from([
-                    (String::from("kitchenRosetteLeft"),
+                    (
+                        String::from("kitchenRosetteLeft"),
                         OwningDeviceInfoProvider {
                             device: Device {
                                 title: String::from("Left"),
                                 item_type: Devices::Rosette,
-                                status: DeviceState::Available
-                            }
-                        }
+                                status: DeviceState::Available,
+                            },
+                        },
                     ),
-                    (String::from("kitchenRosetteRight"),
-                     OwningDeviceInfoProvider {
-                         device: Device {
-                             title: String::from("Right"),
-                             item_type: Devices::Rosette,
-                             status: DeviceState::Available
-                         }
-                     }
+                    (
+                        String::from("kitchenRosetteRight"),
+                        OwningDeviceInfoProvider {
+                            device: Device {
+                                title: String::from("Right"),
+                                item_type: Devices::Rosette,
+                                status: DeviceState::Available,
+                            },
+                        },
                     ),
-                    (String::from("kitchenRosetteCenter"),
-                     OwningDeviceInfoProvider {
-                         device: Device {
-                             title: String::from("Center"),
-                             item_type: Devices::Rosette,
-                             status: DeviceState::Available
-                         }
-                     }
-                    )
+                    (
+                        String::from("kitchenRosetteCenter"),
+                        OwningDeviceInfoProvider {
+                            device: Device {
+                                title: String::from("Center"),
+                                item_type: Devices::Rosette,
+                                status: DeviceState::Available,
+                            },
+                        },
+                    ),
                 ]),
                 devices: HashMap::from([
                     (
@@ -90,19 +92,33 @@ pub mod smart_house {
             }
         }
 
-        pub fn remove_device(&mut self, room:&str, device: &Devices, device_title: &str) {
-            if self.devices.contains_key(room) &&
-                self.devices.get(room).unwrap().contains_key(device) &&
-                self.devices.get(room).unwrap().get(device).unwrap().contains(device_title) {
-                self.devices.get_mut(room).unwrap()
-                    .get_mut(device).unwrap().remove(device_title);           }
+        pub fn remove_device(&mut self, room: &str, device: &Devices, device_title: &str) {
+            if self.devices.contains_key(room)
+                && self.devices.get(room).unwrap().contains_key(device)
+                && self
+                    .devices
+                    .get(room)
+                    .unwrap()
+                    .get(device)
+                    .unwrap()
+                    .contains(device_title)
+            {
+                self.devices
+                    .get_mut(room)
+                    .unwrap()
+                    .get_mut(device)
+                    .unwrap()
+                    .remove(device_title);
+            }
         }
 
         pub fn add_device(&mut self, room: String, device: Devices, device_title: String) {
-            if let std::collections::hash_map::Entry::Occupied(_)= self.devices.entry(room.clone()) {
+            if let std::collections::hash_map::Entry::Occupied(_) = self.devices.entry(room.clone())
+            {
                 let room_map = self.devices.get_mut(&room).unwrap();
 
-                room_map.entry(device)
+                room_map
+                    .entry(device)
                     .or_insert_with(HashSet::new)
                     .extend(HashSet::from([device_title]).into_iter());
             } else {

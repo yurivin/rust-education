@@ -1,6 +1,6 @@
-use std::fmt;
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
+use std::fmt;
 use std::str::FromStr;
 
 pub trait DeviceInfoProvider {
@@ -28,7 +28,7 @@ impl FromStr for Devices {
             "Rosette" => Ok(Devices::Rosette),
             "Thermometer" => Ok(Devices::Thermometer),
             "Speaker" => Ok(Devices::Speaker),
-            _ => Err(SmartHouseError::UnknownDeviceType)
+            _ => Err(SmartHouseError::UnknownDeviceType),
         }
     }
 }
@@ -36,14 +36,14 @@ impl FromStr for Devices {
 #[derive(Debug, Clone)]
 pub enum DeviceState {
     Active,
-    Available
+    Available,
 }
 
 impl DeviceState {
     pub fn opposite(&self) -> DeviceState {
         match self {
             DeviceState::Active => return DeviceState::Available,
-            DeviceState::Available => return DeviceState::Active
+            DeviceState::Available => return DeviceState::Active,
         }
     }
 }
@@ -54,29 +54,63 @@ impl fmt::Display for DeviceState {
     }
 }
 
-
 impl Devices {
-    pub fn power(device_title: &str, room_id: &str, house: &SmartHouse, device_type: Devices) -> Result<f32, SmartHouseError> {
-        println!("Showing power for house {} room {} device {} of type {:?}", house.title, room_id, device_title, device_type);
-            Ok(device_title.len() as f32)
+    pub fn power(
+        device_title: &str,
+        room_id: &str,
+        house: &SmartHouse,
+        device_type: Devices,
+    ) -> Result<f32, SmartHouseError> {
+        println!(
+            "Showing power for house {} room {} device {} of type {:?}",
+            house.title, room_id, device_title, device_type
+        );
+        Ok(device_title.len() as f32)
     }
 
-    pub fn get_state(device_title: &str, room_id: &str, house: &SmartHouse, device_type: Devices) -> Option<DeviceState> {
-        println!("Showing state for house {} room {} device {} of type {:?}", house.title, room_id, device_title, device_type);
+    pub fn get_state(
+        device_title: &str,
+        room_id: &str,
+        house: &SmartHouse,
+        device_type: Devices,
+    ) -> Option<DeviceState> {
+        println!(
+            "Showing state for house {} room {} device {} of type {:?}",
+            house.title, room_id, device_title, device_type
+        );
         let room_devices_option = house.get_room_devices(room_id);
-        println!("There are devices in the room: {}", room_devices_option.is_some());
-        println!("There are devices of type {:?} in the room: {:?}", device_type, room_devices_option.unwrap().get(&device_type).is_some());
-        println!("list of devices of type {:?} in the room: {:?}", device_type, room_devices_option.unwrap().get(&device_type).unwrap());
+        println!(
+            "There are devices in the room: {}",
+            room_devices_option.is_some()
+        );
+        println!(
+            "There are devices of type {:?} in the room: {:?}",
+            device_type,
+            room_devices_option.unwrap().get(&device_type).is_some()
+        );
+        println!(
+            "list of devices of type {:?} in the room: {:?}",
+            device_type,
+            room_devices_option.unwrap().get(&device_type).unwrap()
+        );
         let typed_devices = room_devices_option.unwrap().get(&device_type).unwrap();
-        println!("Room contains device with name {}: {}", device_title, typed_devices.contains(device_title));
+        println!(
+            "Room contains device with name {}: {}",
+            device_title,
+            typed_devices.contains(device_title)
+        );
 
-        if room_devices_option.is_some()
-            && room_devices_option.unwrap().get(&device_type).is_some() {
-            let availability = room_devices_option.unwrap().get(&device_type).unwrap().get(device_title.trim());
+        if room_devices_option.is_some() && room_devices_option.unwrap().get(&device_type).is_some()
+        {
+            let availability = room_devices_option
+                .unwrap()
+                .get(&device_type)
+                .unwrap()
+                .get(device_title.trim());
             println!("Availability: {}", availability.is_some());
             match availability {
                 Some(_) => return Some(DeviceState::Active),
-                None => return None
+                None => return None,
             }
         }
         None

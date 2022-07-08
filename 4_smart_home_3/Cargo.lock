@@ -20,6 +20,7 @@ name = "iotp_client"
 version = "0.1.0"
 dependencies = [
  "iotp",
+ "iotp_server",
 ]
 
 [[package]]
