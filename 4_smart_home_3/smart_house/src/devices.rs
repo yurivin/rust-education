@@ -100,17 +100,18 @@ impl Devices {
             typed_devices.contains(device_title)
         );
 
-        if room_devices_option.is_some() && room_devices_option.unwrap().get(&device_type).is_some()
-        {
-            let availability = room_devices_option
-                .unwrap()
-                .get(&device_type)
-                .unwrap()
-                .get(device_title.trim());
-            println!("Availability: {}", availability.is_some());
-            match availability {
-                Some(_) => return Some(DeviceState::Active),
-                None => return None,
+        if let Some(..) = room_devices_option {
+            if room_devices_option.unwrap().get(&device_type).is_some() {
+                let availability = room_devices_option
+                    .unwrap()
+                    .get(&device_type)
+                    .unwrap()
+                    .get(device_title.trim());
+                println!("Availability: {}", availability.is_some());
+                match availability {
+                    Some(_) => return Some(DeviceState::Active),
+                    None => return None,
+                }
             }
         }
         None
