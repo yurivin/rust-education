@@ -11,7 +11,7 @@ impl<'a> Request<'a> {
         Self(s.split("|||"))
     }
 
-    pub fn next(&mut self) -> &'a str {
+    pub fn next_request(&mut self) -> &'a str {
         self.0.next().unwrap_or("")
     }
 }
@@ -26,19 +26,19 @@ impl RequestHandler {
     }
 
     pub fn handle(&mut self, mut request: Request) -> String {
-        let command = request.next();
+        let command = request.next_request();
 
-        let room_id = request.next();
+        let room_id = request.next_request();
         if room_id.is_empty() {
             return "No room id received".into();
         }
 
-        let device_type = request.next();
+        let device_type = request.next_request();
         if device_type.is_empty() {
             return "No device type received".into();
         }
 
-        let device = request.next();
+        let device = request.next_request();
         if device.is_empty() {
             return "No device name received".into();
         }
