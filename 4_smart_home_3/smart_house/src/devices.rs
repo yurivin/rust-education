@@ -3,6 +3,7 @@ use crate::smart_house::{SmartHouse, SmartHouseError};
 use std::{fmt, net, thread};
 use std::str::FromStr;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU16, Ordering};
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -124,13 +125,13 @@ pub struct Device {
     pub title: String,
     pub item_type: Devices,
     pub status: DeviceState,
-    pub data: Arc<u16>
+    pub data: Arc<AtomicU16>
 }
 
 impl Device {
 
-    pub fn listen(&mut self, address: String) {
-        let arc_self = Arc::new(self);
+    pub fn listen(&self, address: String) {
+        let arc_data = self.data.clone();
 
         thread::spawn(move || {
             let mut buffer: [u8;2] = [0;2];
@@ -142,11 +143,7 @@ impl Device {
                 println!("{:?}", number_of_bytes);
                 println!("{:?}", src_address);
 
-                arc_self.data.checked_add(u16::from_be_bytes(buffer));
-
-                if let DeviceState::Available = arc_self.status {
-                    break
-                }
+                arc_data.store(u16::from_be_bytes(buffer), Ordering::SeqCst);
             }
         });
     }

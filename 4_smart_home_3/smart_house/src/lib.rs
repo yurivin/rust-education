@@ -5,6 +5,7 @@ pub mod smart_house {
     use crate::devices::{Device, DeviceInfoProvider, DeviceState, Devices};
     use ::std::collections::{HashMap, HashSet};
     use std::sync::Arc;
+    use std::sync::atomic::AtomicU16;
 
     pub struct SmartHouse {
         pub title: String,
@@ -35,7 +36,7 @@ pub mod smart_house {
                                 title: String::from("Left"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
-                                data: Arc::new(u16::default())
+                                data: Arc::new(AtomicU16::default())
                             },
                         },
                     ),
@@ -46,7 +47,7 @@ pub mod smart_house {
                                 title: String::from("Right"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
-                                data: Arc::new(u16::default())
+                                data: Arc::new(AtomicU16::default())
                             },
                         },
                     ),
@@ -57,7 +58,7 @@ pub mod smart_house {
                                 title: String::from("Center"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
-                                data: Arc::new(u16::default())
+                                data: Arc::new(AtomicU16::default())
                             },
                         },
                     ),
@@ -68,7 +69,7 @@ pub mod smart_house {
                                 title: String::from("Main"),
                                 item_type: Devices::Thermometer,
                                 status: DeviceState::Active,
-                                data: Arc::new(u16::default())
+                                data: Arc::new(AtomicU16::default())
                             },
                         },
                     ),

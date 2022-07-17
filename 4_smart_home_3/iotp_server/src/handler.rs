@@ -4,6 +4,7 @@ use smart_house::smart_house::SmartHouse;
 use std::ops::Add;
 use std::str::{FromStr, Split};
 use std::sync::Arc;
+use std::sync::atomic::AtomicU16;
 
 pub struct Request<'a>(Split<'a, &'a str>);
 
@@ -62,7 +63,7 @@ impl RequestHandler {
                         title: device_old.title.clone(),
                         item_type: device_old.item_type.clone(),
                         status: device_old.status.opposite(),
-                        data: Arc::new(u16::default())
+                        data: Arc::new(AtomicU16::new(u16::default()))
                     },
                 },
             );

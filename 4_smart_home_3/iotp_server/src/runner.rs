@@ -2,7 +2,7 @@ use crate::handler::{Request, RequestHandler};
 use iotp::server::{IotpConnection, IotpServer};
 use smart_house::smart_house::SmartHouse;
 use std::error::Error;
-use std::{net, thread};
+use std::{thread};
 
 pub fn run(addr: String) -> Result<(), Box<dyn Error>> {
     let server = IotpServer::bind(addr)?;
@@ -25,7 +25,7 @@ pub fn run(addr: String) -> Result<(), Box<dyn Error>> {
 
         thread::spawn(move || {
             let mut smart_house = SmartHouse::default();
-            let mut thermometre = smart_house.store.get_mut("kitchenThermometerMain");
+            let thermometre = smart_house.store.get_mut("kitchenThermometerMain");
 
             thermometre.unwrap().device.listen("127.0.0.1:55331".to_owned());
 
