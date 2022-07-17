@@ -1,6 +1,7 @@
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
-use std::fmt;
+use std::{fmt};
+use std::net::UdpSocket;
 use std::str::FromStr;
 
 pub trait DeviceInfoProvider {
@@ -123,6 +124,27 @@ pub struct Device {
     pub title: String,
     pub item_type: Devices,
     pub status: DeviceState,
+    pub data: u16
+}
+
+impl Device {
+
+    pub fn listen(&mut self, socket: UdpSocket) {
+        let mut buffer: [u8;2] = [0;2];
+
+        loop {
+            let (number_of_bytes, src_address) = socket.recv_from(&mut buffer).expect("no data received");
+
+            println!("{:?}", number_of_bytes);
+            println!("{:?}", src_address);
+
+            self.data = u16::from_be_bytes(buffer);
+
+            if let DeviceState::Available = self.status {
+                break
+            }
+        }
+    }
 }
 
 impl DeviceInfoProvider for Device {

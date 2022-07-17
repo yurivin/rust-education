@@ -61,6 +61,7 @@ impl RequestHandler {
                         title: device_old.title.clone(),
                         item_type: device_old.item_type.clone(),
                         status: device_old.status.opposite(),
+                        data: u16::default()
                     },
                 },
             );

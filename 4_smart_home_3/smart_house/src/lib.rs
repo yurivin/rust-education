@@ -34,6 +34,7 @@ pub mod smart_house {
                                 title: String::from("Left"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
+                                data: u16::default()
                             },
                         },
                     ),
@@ -44,6 +45,7 @@ pub mod smart_house {
                                 title: String::from("Right"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
+                                data: u16::default()
                             },
                         },
                     ),
@@ -54,6 +56,18 @@ pub mod smart_house {
                                 title: String::from("Center"),
                                 item_type: Devices::Rosette,
                                 status: DeviceState::Available,
+                                data: u16::default()
+                            },
+                        },
+                    ),
+                    (
+                        String::from("kitchenThermometerMain"),
+                        OwningDeviceInfoProvider {
+                            device: Device {
+                                title: String::from("Main"),
+                                item_type: Devices::Thermometer,
+                                status: DeviceState::Active,
+                                data: u16::default()
                             },
                         },
                     ),
