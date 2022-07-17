@@ -32,7 +32,7 @@ impl HouseClient {
 mod tests {
     use crate::HouseClient;
     use iotp_server::runner;
-    use std::thread;
+    use std::{net, thread};
 
     #[test]
     fn it_works() {
@@ -75,5 +75,19 @@ mod tests {
         assert!(request_result.is_ok());
         let result = request_result.unwrap();
         assert_eq!("Switched to Active", result);
+
+        //Test case 3 - UDP thermometer listen and get data
+        let receiver_udp_address = "127.0.0.1:55223";
+        let receiver_udp = init_receiver_udp(receiver_udp_address);
+        house
+
+    }
+
+    fn init_receiver_udp(host: &str) -> net::UdpSocket {
+
+        println!("initializing host");
+        let socket = net::UdpSocket::bind(host).expect("failed to bind host socket");
+
+        socket
     }
 }

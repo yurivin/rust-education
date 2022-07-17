@@ -3,6 +3,7 @@ use smart_house::devices::{Device, Devices};
 use smart_house::smart_house::SmartHouse;
 use std::ops::Add;
 use std::str::{FromStr, Split};
+use std::sync::Arc;
 
 pub struct Request<'a>(Split<'a, &'a str>);
 
@@ -61,7 +62,7 @@ impl RequestHandler {
                         title: device_old.title.clone(),
                         item_type: device_old.item_type.clone(),
                         status: device_old.status.opposite(),
-                        data: u16::default()
+                        data: Arc::new(u16::default())
                     },
                 },
             );

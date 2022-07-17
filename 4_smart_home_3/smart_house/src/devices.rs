@@ -1,8 +1,8 @@
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
-use std::{fmt};
-use std::net::UdpSocket;
+use std::{fmt, net, thread};
 use std::str::FromStr;
+use std::sync::Arc;
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -124,26 +124,31 @@ pub struct Device {
     pub title: String,
     pub item_type: Devices,
     pub status: DeviceState,
-    pub data: u16
+    pub data: Arc<u16>
 }
 
 impl Device {
 
-    pub fn listen(&mut self, socket: UdpSocket) {
-        let mut buffer: [u8;2] = [0;2];
+    pub fn listen(&mut self, address: String) {
+        let arc_self = Arc::new(self);
 
-        loop {
-            let (number_of_bytes, src_address) = socket.recv_from(&mut buffer).expect("no data received");
+        thread::spawn(move || {
+            let mut buffer: [u8;2] = [0;2];
+            let socket = net::UdpSocket::bind(address).expect("failed to bind host socket");
 
-            println!("{:?}", number_of_bytes);
-            println!("{:?}", src_address);
+            loop {
+                let (number_of_bytes, src_address) = socket.recv_from(&mut buffer).expect("no data received");
 
-            self.data = u16::from_be_bytes(buffer);
+                println!("{:?}", number_of_bytes);
+                println!("{:?}", src_address);
 
-            if let DeviceState::Available = self.status {
-                break
+                arc_self.data.checked_add(u16::from_be_bytes(buffer));
+
+                if let DeviceState::Available = arc_self.status {
+                    break
+                }
             }
-        }
+        });
     }
 }
 
