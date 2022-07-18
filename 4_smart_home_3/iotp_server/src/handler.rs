@@ -3,8 +3,8 @@ use smart_house::devices::{Device, Devices};
 use smart_house::smart_house::SmartHouse;
 use std::ops::Add;
 use std::str::{FromStr, Split};
-use std::sync::Arc;
 use std::sync::atomic::AtomicU16;
+use std::sync::Arc;
 
 pub struct Request<'a>(Split<'a, &'a str>);
 
@@ -58,8 +58,7 @@ impl RequestHandler {
     }
 
     fn get_temperature(&self, room_id: &str, device_name: &str) -> String {
-        let temperature = Devices::temperature(device_name, room_id, &self.house);
-        temperature
+        Devices::temperature(device_name, room_id, &self.house)
     }
 
     fn switch(&mut self, room_id: &str, device_type: &str, device_name: &str) -> String {
@@ -73,7 +72,7 @@ impl RequestHandler {
                         title: device_old.title.clone(),
                         item_type: device_old.item_type.clone(),
                         status: device_old.status.opposite(),
-                        data: Arc::new(AtomicU16::new(u16::default()))
+                        data: Arc::new(AtomicU16::new(u16::default())),
                     },
                 },
             );

@@ -1,11 +1,10 @@
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
-use std::{fmt, net, thread};
-use std::borrow::Borrow;
 use std::fmt::Debug;
 use std::str::FromStr;
-use std::sync::Arc;
 use std::sync::atomic::{AtomicU16, Ordering};
+use std::sync::Arc;
+use std::{fmt, net, thread};
 
 pub trait DeviceInfoProvider {
     fn get_report(&self) -> Result<String, ReportError>;
@@ -59,15 +58,13 @@ impl fmt::Display for DeviceState {
 }
 
 impl Devices {
-
     pub fn temperature(room_id: &str, device_title: &str, house: &SmartHouse) -> String {
         let mut key = device_title.to_owned();
         key.push_str("Thermometer");
         key.push_str(room_id);
         println!("The key is {}", key);
         let data = house.store.get(&key).unwrap().device.data.clone();
-        let str_data = data.clone().fetch_or(0, Ordering::SeqCst).to_string();
-        str_data
+        data.fetch_or(0, Ordering::SeqCst).to_string()
     }
     pub fn power(
         device_title: &str,
@@ -137,20 +134,20 @@ pub struct Device {
     pub title: String,
     pub item_type: Devices,
     pub status: DeviceState,
-    pub data: Arc<AtomicU16>
+    pub data: Arc<AtomicU16>,
 }
 
 impl Device {
-
     pub fn listen(&self, address: String) {
         let arc_data = self.data.clone();
 
         thread::spawn(move || {
-            let mut buffer: [u8;2] = [0;2];
+            let mut buffer: [u8; 2] = [0; 2];
             let socket = net::UdpSocket::bind(address).expect("failed to bind host socket");
 
             loop {
-                let (number_of_bytes, src_address) = socket.recv_from(&mut buffer).expect("no data received");
+                let (number_of_bytes, src_address) =
+                    socket.recv_from(&mut buffer).expect("no data received");
 
                 println!("{:?}", number_of_bytes);
                 println!("{:?}", src_address);

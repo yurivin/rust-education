@@ -27,7 +27,12 @@ impl HouseClient {
         self.iotp.send_request(request)
     }
 
-    pub fn get_temperature(&mut self, room_id: &str, device_type: &str, device: &str) -> RequestResult {
+    pub fn get_temperature(
+        &mut self,
+        room_id: &str,
+        device_type: &str,
+        device: &str,
+    ) -> RequestResult {
         let request = format!("temp|||{}|||{}|||{}", room_id, device_type, device);
         self.iotp.send_request(request)
     }
@@ -37,8 +42,8 @@ impl HouseClient {
 mod tests {
     use crate::HouseClient;
     use iotp_server::runner;
-    use std::{net, thread};
     use std::time::Duration;
+    use std::{net, thread};
 
     #[test]
     fn it_works() {
@@ -91,7 +96,11 @@ mod tests {
 
         let sender_udp_address = "127.0.0.1:55223";
         let sender_udp = init_sender_udp(sender_udp_address);
-        send(&sender_udp, "127.0.0.1:55331", &Vec::from((16 as u16).to_be_bytes()));
+        send(
+            &sender_udp,
+            "127.0.0.1:55331",
+            &Vec::from((16 as u16).to_be_bytes()),
+        );
         thread::sleep(Duration::from_millis(1000));
         let request_result = client.get_temperature("kitchen", "Thermometer", "Main");
 
@@ -100,7 +109,6 @@ mod tests {
     }
 
     fn init_sender_udp(host: &str) -> net::UdpSocket {
-
         println!("initializing host");
         let socket = net::UdpSocket::bind(host).expect("failed to bind host socket");
 
@@ -108,7 +116,6 @@ mod tests {
     }
 
     fn send(socket: &net::UdpSocket, receiver: &str, msg: &Vec<u8>) -> usize {
-
         println!("sending message: {:?}", msg);
         let result: usize = 0;
         match socket.send_to(&msg, receiver) {

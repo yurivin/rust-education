@@ -1,8 +1,8 @@
-use std::sync::Arc;
-use std::sync::atomic::AtomicU16;
 use smart_house::devices::device_info_provider::{
     BorrowingDeviceInfoProvider, OwningDeviceInfoProvider,
 };
+use std::sync::atomic::AtomicU16;
+use std::sync::Arc;
 
 use smart_house::devices::{Device, DeviceState, Devices};
 use smart_house::smart_house::SmartHouse;
@@ -37,7 +37,7 @@ fn main() {
         title: String::from("Tongo"),
         status: DeviceState::Available,
         item_type: Devices::Thermometer,
-        data: Arc::new(AtomicU16::default())
+        data: Arc::new(AtomicU16::default()),
     };
 
     let owner = OwningDeviceInfoProvider {
@@ -45,7 +45,7 @@ fn main() {
             title: String::from("Bongo"),
             status: DeviceState::Active,
             item_type: Devices::Thermometer,
-            data: Arc::new(AtomicU16::default())
+            data: Arc::new(AtomicU16::default()),
         },
     };
 
