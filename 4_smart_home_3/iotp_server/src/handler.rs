@@ -44,16 +44,26 @@ impl RequestHandler {
         if device.is_empty() {
             return "No device name received".into();
         }
+
+        let room_id_trim = room_id.trim();
+        let device_type_trim = device_type.trim();
+        let device_trim = device.trim();
         match command {
-            "state" => self.get_state(room_id, device_type, device),
-            "power" => self.get_power(room_id, device_type, device),
-            "switch" => self.switch(room_id.trim(), device_type.trim(), device.trim()),
+            "state" => self.get_state(room_id_trim, device_type_trim, device_trim),
+            "power" => self.get_power(room_id_trim, device_type_trim, device_trim),
+            "switch" => self.switch(room_id_trim, device_type_trim, device_trim),
+            "temp" => self.get_temperature(room_id_trim, device_trim),
             _ => "Bad command".into(),
         }
     }
 
-    fn switch(&mut self, room_id: &str, device_type: &str, rosette: &str) -> String {
-        let store_id = room_id.to_owned().add(device_type).add(rosette);
+    fn get_temperature(&self, room_id: &str, device_name: &str) -> String {
+        let temperature = Devices::temperature(device_name, room_id, &self.house);
+        temperature
+    }
+
+    fn switch(&mut self, room_id: &str, device_type: &str, device_name: &str) -> String {
+        let store_id = room_id.to_owned().add(device_type).add(device_name);
         if self.house.store.get(&store_id).is_some() {
             let device_old = &self.house.store.get(&store_id).unwrap().device.clone();
             self.house.store.insert(

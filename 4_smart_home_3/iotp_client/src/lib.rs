@@ -26,6 +26,11 @@ impl HouseClient {
         let request = format!("switch|||{}|||{}|||{}", room_id, device_type, device);
         self.iotp.send_request(request)
     }
+
+    pub fn get_temperature(&mut self, room_id: &str, device_type: &str, device: &str) -> RequestResult {
+        let request = format!("temp|||{}|||{}|||{}", room_id, device_type, device);
+        self.iotp.send_request(request)
+    }
 }
 
 #[cfg(test)]
@@ -33,6 +38,7 @@ mod tests {
     use crate::HouseClient;
     use iotp_server::runner;
     use std::{net, thread};
+    use std::time::Duration;
 
     #[test]
     fn it_works() {
@@ -77,10 +83,20 @@ mod tests {
         assert_eq!("Switched to Active", result);
 
         //Test case 3 - UDP thermometer listen and get data
+        let request_result = client.get_temperature("kitchen", "Thermometer", "Main");
+        assert!(request_result.is_ok());
+        let first_result = request_result.unwrap();
+        assert_eq!("0", &first_result);
+        println!("First temperature {}", &first_result);
+
         let sender_udp_address = "127.0.0.1:55223";
-        let receiver_udp = init_sender_udp(sender_udp_address);
+        let sender_udp = init_sender_udp(sender_udp_address);
+        send(&sender_udp, "127.0.0.1:55331", &Vec::from((16 as u16).to_be_bytes()));
+        thread::sleep(Duration::from_millis(1000));
+        let request_result = client.get_temperature("kitchen", "Thermometer", "Main");
 
-
+        assert!(request_result.is_ok());
+        assert_eq!("16", request_result.unwrap());
     }
 
     fn init_sender_udp(host: &str) -> net::UdpSocket {

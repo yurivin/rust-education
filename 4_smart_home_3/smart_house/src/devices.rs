@@ -1,6 +1,8 @@
 use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
 use std::{fmt, net, thread};
+use std::borrow::Borrow;
+use std::fmt::Debug;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU16, Ordering};
@@ -57,6 +59,16 @@ impl fmt::Display for DeviceState {
 }
 
 impl Devices {
+
+    pub fn temperature(room_id: &str, device_title: &str, house: &SmartHouse) -> String {
+        let mut key = device_title.to_owned();
+        key.push_str("Thermometer");
+        key.push_str(room_id);
+        println!("The key is {}", key);
+        let data = house.store.get(&key).unwrap().device.data.clone();
+        let str_data = data.clone().fetch_or(0, Ordering::SeqCst).to_string();
+        str_data
+    }
     pub fn power(
         device_title: &str,
         room_id: &str,
