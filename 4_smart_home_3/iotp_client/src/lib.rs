@@ -77,17 +77,29 @@ mod tests {
         assert_eq!("Switched to Active", result);
 
         //Test case 3 - UDP thermometer listen and get data
-        let receiver_udp_address = "127.0.0.1:55223";
-        let receiver_udp = init_receiver_udp(receiver_udp_address);
-        house
+        let sender_udp_address = "127.0.0.1:55223";
+        let receiver_udp = init_sender_udp(sender_udp_address);
+
 
     }
 
-    fn init_receiver_udp(host: &str) -> net::UdpSocket {
+    fn init_sender_udp(host: &str) -> net::UdpSocket {
 
         println!("initializing host");
         let socket = net::UdpSocket::bind(host).expect("failed to bind host socket");
 
         socket
+    }
+
+    fn send(socket: &net::UdpSocket, receiver: &str, msg: &Vec<u8>) -> usize {
+
+        println!("sending message: {:?}", msg);
+        let result: usize = 0;
+        match socket.send_to(&msg, receiver) {
+            Ok(number_of_bytes) => println!("{:?}", number_of_bytes),
+            Err(fail) => println!("failed sending {:?}", fail),
+        }
+
+        result
     }
 }
