@@ -99,7 +99,7 @@ mod tests {
         send(
             &sender_udp,
             "127.0.0.1:55331",
-            &Vec::from((16 as u16).to_be_bytes()),
+            &Vec::from((16 as u8).to_be_bytes()),
         );
         thread::sleep(Duration::from_millis(1000));
         let request_result = client.get_temperature("kitchen", "Thermometer", "Main");

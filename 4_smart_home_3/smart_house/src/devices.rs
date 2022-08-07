@@ -2,7 +2,7 @@ use crate::devices::device_info_provider::ReportError;
 use crate::smart_house::{SmartHouse, SmartHouseError};
 use std::fmt::Debug;
 use std::str::FromStr;
-use std::sync::atomic::{AtomicU16, Ordering};
+use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::Arc;
 use std::{fmt, net, thread};
 
@@ -134,7 +134,7 @@ pub struct Device {
     pub title: String,
     pub item_type: Devices,
     pub status: DeviceState,
-    pub data: Arc<AtomicU16>,
+    pub data: Arc<AtomicU8>,
 }
 
 impl Device {
@@ -142,7 +142,7 @@ impl Device {
         let arc_data = self.data.clone();
 
         thread::spawn(move || {
-            let mut buffer: [u8; 2] = [0; 2];
+            let mut buffer: [u8; 1] = [0; 1];
             let socket = net::UdpSocket::bind(address).expect("failed to bind host socket");
 
             loop {
@@ -152,7 +152,7 @@ impl Device {
                 println!("{:?}", number_of_bytes);
                 println!("{:?}", src_address);
 
-                arc_data.store(u16::from_be_bytes(buffer), Ordering::SeqCst);
+                arc_data.store(u8::from_be_bytes(buffer), Ordering::SeqCst);
             }
         });
     }
